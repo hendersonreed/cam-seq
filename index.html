@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p5.js cam sequencer</title>
+  <style>
+    html {
+      height: 100%;
+      background-color: black;
+    }
+    body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+
+      /* This centers our sketch horizontally. */
+      justify-content: center;
+
+      /* This centers our sketch vertically. */
+      align-items: center;
+    }
+    .modal {
+      position: fixed; /* Stay in place */
+      top: 50%; /* Center vertically */
+      left: 50%; /* Center horizontally */
+      transform: translate(-50%, -50%); /* Center the modal */
+      width: 80vw; /* 80% of viewport width */
+      height: 30vh; /* 30% of viewport height */
+      background-color: black; /* Background color */
+      color: white;
+      border: 1px solid white; /* Border */
+      padding: 20px; /* Padding */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.9); /* Box shadow */
+    }
+  </style>
+  <script src="assets/p5.js"></script>
+  <script src="assets/tone.js"></script>
+  <script src="sketch.js"></script>
+</head>
+
+<body>
+  <main>
+  </main>
+  <div id="modal" class="modal">
+  <h2>camera motion sequencer thing, by reed</h2>
+  <ul>
+    <li><p>keys 0-9 select an instrument</p></li>
+    <li><p>keys qwertyuiop create note triggers at the mouse position based on the currently selected scale.</p></li>
+    <li><p>hover over a note trigger and hit d to remove it.</p></li>
+    <li><p>hit x to delete all note triggers</p></li>
+    <li><p>use the threshold slider to make all note triggers more or less sensitive</p></li>
+  </div>
+</body>
+
+</html>
