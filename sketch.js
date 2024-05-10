@@ -12,19 +12,16 @@ let aPentatonicMinorScale = ['A4', 'C5', 'D5', 'E5', 'G5', 'A5', 'C6', 'D6', 'E6
 const reverb = new Tone.Reverb();
 const filter = new Tone.Filter(1500, "lowpass", -12);
 
-let instrumentConstructorExpressions = [
-	"new Tone.Synth().connect(reverb).connect(filter).toDestination()",
-	"new Tone.MembraneSynth().connect(reverb).connect(filter).toDestination()",
-	"new Tone.PluckSynth().connect(reverb).connect(filter).toDestination()",
-	"new Tone.AMSynth().connect(reverb).connect(filter).toDestination()",
-	"new Tone.DuoSynth().connect(reverb).connect(filter).toDestination()",
-	"new Tone.MetalSynth().connect(reverb).connect(filter).toDestination()",
-	"new Tone.NoiseSynth().connect(reverb).connect(filter).toDestination()",
-	"new Tone.Synth().connect(reverb).connect(filter).toDestination()",
-	"new Tone.Synth().connect(reverb).connect(filter).toDestination()",
-	"new Tone.Synth().connect(reverb).connect(filter).toDestination()",
-];
-// 10 synths, to keep with 0-9
+function newInstrument(key) {
+	switch (key) {
+		case 1: return new Tone.MembraneSynth().connect(reverb).connect(filter).toDestination();
+		case 2: return new Tone.PluckSynth().connect(reverb).connect(filter).toDestination();
+		case 3: return new Tone.AMSynth().connect(reverb).connect(filter).toDestination();
+		case 4: return new Tone.DuoSynth().connect(reverb).connect(filter).toDestination();
+		case 5: return new Tone.MetalSynth().connect(reverb).connect(filter).toDestination();
+		default: return new Tone.Synth().connect(reverb).connect(filter).toDestination();
+	}
+}
 
 function preload() {
 	state = {
@@ -65,12 +62,12 @@ function preload() {
 	state.thresholdSlider = createSlider(0, 255, state.threshold, 0);
 
 	state.scaleSelect = createSelect();
-	state.scaleSelect.option('aNaturalMinorScale');
-	state.scaleSelect.option('aPentatonicMinorScale');
-	state.scaleSelect.option('aDorianScale');
-	state.scaleSelect.option('aAeolianScale');
-	state.scaleSelect.option('aPhrygianScale');
-	state.scaleSelect.option('aMelodicMinorScale');
+	state.scaleSelect.option('aNaturalMinorScale', aNaturalMinorScale);
+	state.scaleSelect.option('aPentatonicMinorScale', aPentatonicMinorScale);
+	state.scaleSelect.option('aDorianScale', aDorianScale);
+	state.scaleSelect.option('aAeolianScale', aAeolianScale);
+	state.scaleSelect.option('aPhrygianScale', aPhrygianScale);
+	state.scaleSelect.option('aMelodicMinorScale', aMelodicMinorScale);
 }
 
 let initialized = false;
@@ -89,11 +86,11 @@ document.addEventListener("click", () => {
 function addPointIfNeeded(key) {
 	function addPoint() {
 		let newPoint = {
-			instrument: eval(instrumentConstructorExpressions[state.selectedInstrument]),
+			instrument: newInstrument(),
 			pointColor: state.colors[state.selectedInstrument],
 			x: mouseX,
 			y: mouseY,
-			note: eval(state.scaleSelect.selected())[state.selectedNote],
+			note: state.scaleSelect.value().split(",")[state.selectedNote],
 			pastColors: [],
 			colors: [],
 		}
@@ -144,7 +141,6 @@ function addPointIfNeeded(key) {
 			addPoint();
 			break;
 	}
-	console.log(state.points);
 }
 
 function changeInstrumentIfNeeded(key) {
@@ -199,6 +195,7 @@ function draw() {
 			strokeWeight(2);
 			ellipse(point.x, point.y, state.pointSize, state.pointSize);
 		}
+
 		state.points.forEach((point) => {
 			point.pastColors = point.colors;
 			point.colors = get(point.x, point.y);
@@ -234,10 +231,11 @@ function checkDistanceAndTriggerNote(point) {
 	}
 
 	state.threshold = state.thresholdSlider.value();
-	state.scale = eval(state.scaleSelect.selected());
+	state.scale = state.scaleSelect.value();
 	let dist = euclideanDistance(point.colors, point.pastColors);
 	if (dist > state.threshold && state.audioRunning) {
-		point.instrument.triggerAttackRelease(point.note, state.noteLengths[0], Tone.now());
+		//point.instrument.triggerAttackRelease(point.note, state.noteLengths[0], Tone.now());
+		point.instrument.triggerAttackRelease("A4", "8n");
 		// TODO: we may/need/want/crave? variable note length. how to select, scroll wheel????
 	}
 }
