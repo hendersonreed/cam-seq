@@ -244,8 +244,7 @@ function checkDistanceAndTriggerNote(point) {
 	state.scale = state.scaleSelect.value();
 	let dist = euclideanDistance(point.colors, point.pastColors);
 	if (dist > state.threshold && state.audioRunning) {
-		//point.instrument.triggerAttackRelease(point.note, state.noteLengths[0], Tone.now());
-		point.instrument.triggerAttackRelease("A4", "8n");
+		point.instrument.triggerAttackRelease(point.note, state.noteLengths[0], Tone.now());
 		// TODO: we may/need/want/crave? variable note length. how to select, scroll wheel????
 	}
 }
