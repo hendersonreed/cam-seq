@@ -8,7 +8,6 @@ let aMelodicMinorScale = ['A4', 'B4', 'C5', 'D5', 'E5', 'F#5', 'G#5', 'A5', 'B5'
 let aPentatonicMinorScale = ['A4', 'C5', 'D5', 'E5', 'G5', 'A5', 'C6', 'D6', 'E6', 'G6'];
 // 10 notes each (to work with qwertyuiop for selection)
 
-
 const reverb = new Tone.Reverb();
 const filter = new Tone.Filter(1500, "lowpass", -12);
 
@@ -72,16 +71,38 @@ function preload() {
 
 let initialized = false;
 document.addEventListener("click", () => {
-	let modal = document.getElementById("modal");
-	modal.style.display = "none";
-
 	if (!initialized) {
+		toggleHelpPage();
 		initialized = true;
 		state.audioRunning = true;
 		Tone.start();
 	}
 });
 
+
+document.addEventListener("keypress", (event) => {
+	if (event.key === "?") {
+		toggleHelpPage();
+	}
+	if (event.key === "x") { // clear all the points
+		state.points = []
+	}
+	if (event.key === "d") {
+		deleteNote();
+	}
+
+	changeInstrumentIfNeeded(event.key);
+	addPointIfNeeded(event.key);
+});
+
+function toggleHelpPage() {
+	let modal = document.getElementById("modal");
+	if (modal.style.display === "none") {
+		modal.style.display = "block";
+	} else {
+		modal.style.display = "none";
+	}
+}
 
 function addPointIfNeeded(key) {
 	function addPoint() {
@@ -170,17 +191,6 @@ function deleteNote() {
 }
 
 
-document.addEventListener("keypress", (event) => {
-	if (event.key === "x") {
-		state.points = []
-	}
-	if (event.key === "d") {
-		deleteNote();
-	}
-
-	changeInstrumentIfNeeded(event.key);
-	addPointIfNeeded(event.key);
-});
 
 
 // this is the only real p5.js code, and it handles the event loop and drawing on the canvas,
